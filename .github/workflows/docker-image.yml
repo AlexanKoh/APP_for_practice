@@ -3,7 +3,6 @@ name: Build and Push Docker Image to GitHub
 on:
   push:
     branches: ["main"]
-    tags: v*
 
 jobs:
   build-and-push:
@@ -23,25 +22,8 @@ jobs:
           sudo curl -L "https://github.com/docker/compose/releases/download/v2.23.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
 
-      - name: Extract Docker tag
-        id: docker-tag
-        if: startsWith(github.ref, 'refs/tags/')
-        run: |
-          echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-
-      - name: Build and push (main branch)
+      - name: Build and push
         if: github.ref == 'refs/heads/main'
         run: |
           docker-compose -f docker-compose.yml build
           docker-compose -f docker-compose.yml push
-
-      - name: Build and push (tagged version)
-        if: startsWith(github.ref, 'refs/tags/')
-        run: |
-          # Обновляем образы с версионными тегами
-          docker-compose -f docker-compose.yml build
-          docker-compose -f docker-compose.yml push
-          
-          # Дополнительно помечаем как latest
-          docker tag alexankoh/app_for_practice:${{ steps.docker-tag.outputs.tag }} alexankoh/app_for_practice:latest
-          docker push alexankoh/app_for_practice:latest
