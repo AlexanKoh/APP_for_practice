@@ -1,7 +1,7 @@
 services:
   backend:
     build: backend/.
-    image: kohanov9/app_for_practice-backend:v1
+    image: kohanov9/app_for_practice-backend:latest
     env_file: backend/.env
     restart: always
     networks:
@@ -21,7 +21,7 @@ services:
   frontend:
     build: 
       context: frontend/.
-    image: kohanov9/app_for_practice-frontend:v1
+    image: kohanov9/app_for_practice-frontend:latest
     restart: always
     env_file: frontend/.env
     depends_on:
